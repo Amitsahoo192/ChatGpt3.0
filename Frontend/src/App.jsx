@@ -8,112 +8,87 @@ function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-
   // Reference to the bottom of the chat
   const messagesEndRef = useRef(null);
-
   // Auto-scroll when messages change or loading changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages, loading]);
-
   async function callServer(allMessages) {
     const response = await fetch(
       "http://localhost:3000/chat",
       {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           messages: allMessages,
         }),
       }
     );
-
     if (!response.ok) {
       throw new Error(
         "Error Generating response from server"
       );
     }
-
     const data = await response.json();
-
     return data.message;
   }
-
   async function generate(text) {
     const newMessage = {
       text: text,
       sender: "user",
     };
-
     // Create complete updated history
     const updatedMessages = [
       ...messages,
       newMessage,
     ];
-
     // Show user message
     setMessages(updatedMessages);
-
     setLoading(true);
-
     try {
       // Send complete history to backend
       const result =
         await callServer(updatedMessages);
-
       const aiMessage = {
         text: result,
         sender: "assistant",
       };
-
       // Add AI response to history
       setMessages((prevMessages) => [
         ...prevMessages,
         aiMessage,
       ]);
-
     } catch (error) {
       console.error(error);
-
       const errorMessage = {
         text: "Sorry, something went wrong.",
         sender: "assistant",
       };
-
       setMessages((prevMessages) => [
         ...prevMessages,
         errorMessage,
       ]);
-
     } finally {
       // Stop loading whether successful or error
       setLoading(false);
     }
   }
-
   async function handleAddBtn() {
   if (loading) {
-    return;
+    return; 
   }
-
   const text = input.trim();
-
   if (!text) {
     return;
   }
-
   setInput("");
-
   await generate(text);
 }
-
   async function handleEnter(e) {
     if (
       e.key === "Enter" &&
@@ -121,15 +96,11 @@ function App() {
       !loading
     ) {
       e.preventDefault();
-
       const text = input.trim();
-
       if (!text) {
         return;
       }
-
       await generate(text);
-
       setInput("");
     }
   }
