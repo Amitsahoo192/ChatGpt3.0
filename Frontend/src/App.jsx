@@ -10,12 +10,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   // Reference to the bottom of the chat
   const messagesEndRef = useRef(null);
-  // Auto-scroll when messages change or loading changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-  }, [messages, loading]);
+  }, [messages, loading]);//change when messages or loading changes
   async function callServer(allMessages) {
     const response = await fetch(
       "http://localhost:3000/chat",
@@ -157,15 +156,11 @@ function App() {
             className="w-full resize-none outline-none disabled:opacity-50"
             placeholder="Ask anything..."
           />
-          
-
           <div className="flex justify-end">
 
             <button
               className="bg-white text-black px-4 py-1 rounded-full disabled:opacity-50"
-
               onClick={handleAddBtn}
-
               disabled={loading}
             >
               {loading ? "Thinking..." : "Send"}

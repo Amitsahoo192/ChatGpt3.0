@@ -5,24 +5,19 @@ import { generate } from "../tools/app.js";
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
-
 app.get("/", (req, res) => {
   res.send("Welcome to ChatBot!");
 });
-
 app.post("/chat", async (req, res) => {
   try {
     const { messages } = req.body;
-
     // Convert frontend messages to Groq format
     const formattedMessages = messages.map((message) => ({
       role:
         message.sender === "user"
           ? "user"
           : "assistant",
-
       content: message.text,
     }));
 
