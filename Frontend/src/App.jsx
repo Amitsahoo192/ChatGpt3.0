@@ -3,18 +3,44 @@ import {
   useEffect,
   useRef,
 } from "react";
+import Sidebar from "./components/Sidebar.jsx";
+import Message from "./components/Message.jsx";
 
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [chatId, setChatId] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [chats, setChats] = useState([]);
   // Reference to the bottom of the chat
   const messagesEndRef = useRef(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-  }, [messages, loading]);//change when messages or loading changes
+  }, [messages, loading]);
+ async function loadChats() {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/chats"
+    );
+
+    const data = await response.json();
+
+    setChats(data);
+  } catch (error) {
+    console.error(
+      "Error loading chats:",
+      error
+    );
+  }
+}
+
+useEffect(() => {
+  loadChats();
+}, []);
+
   async function callServer(allMessages) {
     const response = await fetch(
       "http://localhost:3000/chat",
@@ -24,6 +50,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          chatId: chatId,
           messages: allMessages,
         }),
       }
@@ -34,7 +61,9 @@ function App() {
       );
     }
     const data = await response.json();
-    return data.message;
+   setChatId(data.chatId);
+   await loadChats();
+   return data.message;
   }
   async function generate(text) {
     const newMessage = {
@@ -103,24 +132,52 @@ function App() {
       setInput("");
     }
   }
+  function handleNewChat() {
+  setMessages([]);
+  setChatId(null);
+}
+function loadChat(chat) {
+  setMessages(chat.messages);
+  setChatId(chat._id);
+}
+useEffect(() => {
+  async function loadChats() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/chats"
+      );
 
+      const data = await response.json();
+
+      setChats(data);
+    } catch (error) {
+      console.error(
+        "Error loading chats:",
+        error
+      );
+    }
+  }
+
+  loadChats();
+}, []);
   return (
     <div className="container mx-auto max-w-4xl pb-24">
+      {/* Sidebar */}
+
+      <Sidebar
+     chats={chats}
+     handleNewChat={handleNewChat}
+      loadChat={loadChat}
+    />
 
       {/* Chat messages */}
 
       {messages.map((message, index) => (
-        <div
-          key={index}
-          className={`my-6 p-3 rounded-xl max-w-fit ${
-            message.sender === "user"
-              ? "bg-neutral-800 ml-auto"
-              : "bg-neutral-700 mr-auto"
-          }`}
-        >
-          {message.text}
-        </div>
-      ))}
+  <Message
+    key={index}
+    message={message}
+  />
+))}
 
       {/* Loading message */}
 
