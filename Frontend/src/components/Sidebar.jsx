@@ -4,19 +4,16 @@ function Sidebar({
   loadChat,
 }) {
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-neutral-950 border-r border-neutral-800 p-4 z-40">
-
+    <div className="h-screen w-64 bg-neutral-950 border-r border-neutral-800 p-4 flex flex-col">
       {/* Logo */}
       <div className="flex items-center gap-2 mb-8">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
           N
         </div>
-
         <span className="text-xl font-semibold">
           Nexora
         </span>
       </div>
-
       {/* New Chat */}
       <button
         onClick={handleNewChat}
@@ -34,21 +31,16 @@ function Sidebar({
         <span className="text-xl transition-transform duration-300 group-hover:rotate-90">
           +
         </span>
-
         <span className="font-medium">
           New Chat
         </span>
       </button>
-
       {/* History */}
       <div className="mt-8">
-
         <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-3">
           Recent Chats
         </p>
-
-        <div className="space-y-1 overflow-y-auto max-h-[65vh]">
-
+        <div className="space-y-1 overflow-y-auto">
           {chats.map((chat) => (
             <div
               key={chat._id}
@@ -68,13 +60,10 @@ function Sidebar({
               {chat.title || "New Chat"}
             </div>
           ))}
-
         </div>
-
       </div>
-
       {/* Bottom */}
-      <div className="absolute bottom-4 left-4 right-4">
+      <div className="mt-auto pt-4">
         <div className="h-px bg-neutral-800 mb-3" />
 
         <div className="flex items-center gap-2 text-sm text-neutral-500">
