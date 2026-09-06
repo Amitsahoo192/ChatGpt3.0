@@ -13,15 +13,19 @@ function App() {
   const [chatId, setChatId] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chats, setChats] = useState([]);
+
   // Reference to the bottom of the chat
   const messagesEndRef = useRef(null);
 
+  // Auto scroll when messages or loading state changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "end",
     });
   }, [messages, loading]);
 
+  // Load all chats
   async function loadChats() {
     try {
       const response = await fetch(
@@ -39,6 +43,7 @@ function App() {
     }
   }
 
+  // Load chats when app starts
   useEffect(() => {
     loadChats();
   }, []);
@@ -88,6 +93,7 @@ function App() {
     // Show user message
     setMessages(updatedMessages);
 
+    // Show loading state
     setLoading(true);
 
     try {
@@ -118,7 +124,6 @@ function App() {
         errorMessage,
       ]);
     } finally {
-      // Stop loading whether successful or error
       setLoading(false);
     }
   }
@@ -153,9 +158,9 @@ function App() {
         return;
       }
 
-      await generate(text);
-
       setInput("");
+
+      await generate(text);
     }
   }
 
@@ -168,27 +173,6 @@ function App() {
     setMessages(chat.messages);
     setChatId(chat._id);
   }
-
-  useEffect(() => {
-    async function loadChats() {
-      try {
-        const response = await fetch(
-          "http://localhost:3000/chats"
-        );
-
-        const data = await response.json();
-
-        setChats(data);
-      } catch (error) {
-        console.error(
-          "Error loading chats:",
-          error
-        );
-      }
-    }
-
-    loadChats();
-  }, []);
 
   return (
     <div className="flex h-screen bg-neutral-950 text-white">
@@ -203,7 +187,7 @@ function App() {
 
       {/* Chat area */}
 
-      <main className="flex-1 overflow-y-auto pb-32 flex justify-center">
+      <main className="flex-1 overflow-y-auto pb-40 flex justify-center">
 
         <div className="w-full max-w-3xl px-6">
 
@@ -220,8 +204,8 @@ function App() {
               </h1>
 
               <p className="text-neutral-500 max-w-md">
-                Your AI workbench for chatting, coding, web search,
-                and working with your documents.
+                Your AI workbench for chatting, coding,
+                web search, and working with your documents.
               </p>
 
             </div>
@@ -251,9 +235,12 @@ function App() {
             </div>
           )}
 
-          {/* Auto-scroll target */}
+          {/* Extra space for fixed input + auto-scroll target */}
 
-          <div ref={messagesEndRef}></div>
+          <div
+            ref={messagesEndRef}
+            className="h-40"
+          ></div>
 
         </div>
 
@@ -261,7 +248,7 @@ function App() {
 
       {/* Input section */}
 
-      <div className="fixed bottom-0 left-64 right-0 flex justify-center p-4">
+      <div className="fixed bottom-0 left-64 right-0 flex justify-center p-4 z-50">
 
         <div className="w-full max-w-3xl bg-neutral-900 border border-neutral-700 rounded-2xl p-3 shadow-lg focus-within:border-neutral-500">
 
