@@ -5,6 +5,8 @@ import {
 } from "react";
 import Sidebar from "./components/Sidebar.jsx";
 import Message from "./components/Message.jsx";
+import VoiceInput from "./components/VoiceInput.jsx";
+
 
 function App() {
   const [input, setInput] = useState("");
@@ -264,7 +266,7 @@ function App() {
               className="flex-1 h-12 bg-transparent text-white placeholder:text-neutral-500 resize-none outline-none px-2 py-2 disabled:opacity-50"
               placeholder="Ask anything..."
             />
-
+            <VoiceInput setInput={setInput} />
             <button
               className="bg-white text-black px-5 py-2 rounded-full font-medium hover:bg-neutral-200 hover:scale-105 active:scale-95 transition disabled:opacity-50"
               onClick={handleAddBtn}
