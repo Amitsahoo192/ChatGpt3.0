@@ -18,6 +18,11 @@ app.get("/", (req, res) => {
 app.post("/chat", async (req, res) => {
   try {
     const { chatId, messages } = req.body;
+    if (!messages || messages.length === 0) {
+  return res.status(400).json({
+    message: "Messages are required",
+  });
+}
 
     // Convert frontend messages to Groq format
     const formattedMessages = messages.map((message) => ({
@@ -53,15 +58,20 @@ app.post("/chat", async (req, res) => {
     }
 
     if (!chat) {
-  chat = await Chat.create({
-    title:
-      updatedMessages.find(
-        (message) => message.sender === "user"
-      )?.text || "New Chat",
+      const firstUserMessage =
+        updatedMessages.find(
+          (message) => message.sender === "user"
+        )?.text || "New Chat";
 
-    messages: updatedMessages,
-  });
-}
+      chat = await Chat.create({
+        title:
+          firstUserMessage.length > 40
+            ? firstUserMessage.substring(0, 40) + "..."
+            : firstUserMessage,
+
+        messages: updatedMessages,
+      });
+    }
     res.json({
       message: result,
       chatId: chat._id,
@@ -85,6 +95,35 @@ app.get("/chats", async (req, res) => {
 
   } catch (error) {
     console.error("GET CHATS ERROR:", error);
+
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+});
+// Delete a chat
+app.delete("/chats/:chatId", async (req, res) => {
+  try {
+    const { chatId } = req.params;
+
+    const deletedChat =
+      await Chat.findByIdAndDelete(chatId);
+
+    if (!deletedChat) {
+      return res.status(404).json({
+        message: "Chat not found",
+      });
+    }
+
+    res.json({
+      message: "Chat deleted successfully",
+    });
+
+  } catch (error) {
+    console.error(
+      "DELETE CHAT ERROR:",
+      error
+    );
 
     res.status(500).json({
       message: "Something went wrong",

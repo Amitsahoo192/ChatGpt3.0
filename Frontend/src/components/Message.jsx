@@ -1,14 +1,19 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {
+  Prism as SyntaxHighlighter,
+} from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import VoiceOutput from "./VoiceOutput.jsx";
+
 function Message({ message }) {
   const [copied, setCopied] = useState(false);
 
+  // Copy code
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
+
     setCopied(true);
 
     setTimeout(() => {
@@ -18,12 +23,14 @@ function Message({ message }) {
 
   return (
     <div
-      className={`my-6 p-4 rounded-2xl max-w-[85%] ${
+      className={`my-6 p-4 rounded-2xl max-w-[85%] relative ${
         message.sender === "user"
           ? "bg-neutral-800 ml-auto"
           : "bg-neutral-700 mr-auto"
       }`}
     >
+
+      {/* Message content */}
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -63,28 +70,42 @@ function Message({ message }) {
             </ol>
           ),
 
-          code: ({ className, children }) => {
-            const match = /language-(\w+)/.exec(
-              className || ""
-            );
+          code: ({
+            className,
+            children,
+          }) => {
+            const match =
+              /language-(\w+)/.exec(
+                className || ""
+              );
 
             if (match) {
-              const code = String(children).replace(
-                /\n$/,
-                ""
-              );
+              const code =
+                String(children).replace(
+                  /\n$/,
+                  ""
+                );
 
               return (
                 <div className="my-4 rounded-xl overflow-hidden bg-neutral-900">
+
                   <div className="flex justify-between items-center px-4 py-2 text-sm text-neutral-400">
-                    <span>{match[1]}</span>
+
+                    <span>
+                      {match[1]}
+                    </span>
 
                     <button
-                      onClick={() => copyCode(code)}
+                      onClick={() =>
+                        copyCode(code)
+                      }
                       className="hover:text-white"
                     >
-                      {copied ? "Copied!" : "Copy"}
+                      {copied
+                        ? "Copied!"
+                        : "Copy"}
                     </button>
+
                   </div>
 
                   <SyntaxHighlighter
@@ -94,6 +115,7 @@ function Message({ message }) {
                   >
                     {code}
                   </SyntaxHighlighter>
+
                 </div>
               );
             }
@@ -109,8 +131,64 @@ function Message({ message }) {
         {message.text}
       </ReactMarkdown>
 
+      {/* Assistant actions */}
       {message.sender === "assistant" && (
-        <VoiceOutput text={message.text} />
+        <div className="flex items-center gap-1 mt-3">
+
+          {/* Voice Output */}
+          <VoiceOutput text={message.text} />
+
+          {/* Copy */}
+          <button
+            className="
+              px-2 py-1
+              rounded-lg
+              text-neutral-400
+              hover:text-white
+              hover:bg-neutral-600
+              transition
+            "
+            title="Copy"
+            onClick={() =>
+              navigator.clipboard.writeText(
+                message.text
+              )
+            }
+          >
+            📋
+          </button>
+
+          {/* Like */}
+          <button
+            className="
+              px-2 py-1
+              rounded-lg
+              text-neutral-400
+              hover:text-white
+              hover:bg-neutral-600
+              transition
+            "
+            title="Like"
+          >
+            👍
+          </button>
+
+          {/* Unlike */}
+          <button
+            className="
+              px-2 py-1
+              rounded-lg
+              text-neutral-400
+              hover:text-white
+              hover:bg-neutral-600
+              transition
+            "
+            title="Unlike"
+          >
+            👎
+          </button>
+
+        </div>
       )}
 
     </div>

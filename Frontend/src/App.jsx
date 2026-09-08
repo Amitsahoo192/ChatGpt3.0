@@ -44,7 +44,43 @@ function App() {
       );
     }
   }
+  async function deleteChat(id) {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this chat?"
+  );
 
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:3000/chats/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to delete chat");
+    }
+
+    // If deleted chat is currently open
+    if (chatId === id) {
+      setMessages([]);
+      setChatId(null);
+    }
+
+    // Refresh sidebar
+    await loadChats();
+
+  } catch (error) {
+    console.error(
+      "Error deleting chat:",
+      error
+    );
+  }
+}
   // Load chats when app starts
   useEffect(() => {
     loadChats();
@@ -171,20 +207,24 @@ function App() {
     setChatId(null);
   }
 
-  function loadChat(chat) {
-    setMessages(chat.messages);
-    setChatId(chat._id);
+ function loadChat(chat) {
+  if (loading) {
+    return;
   }
+
+  setMessages(chat.messages);
+  setChatId(chat._id);
+}
 
   return (
     <div className="flex h-screen bg-neutral-950 text-white">
 
-      {/* Sidebar */}
-
-      <Sidebar
+      {/* Sidebar */}<Sidebar
         chats={chats}
+        chatId={chatId}
         handleNewChat={handleNewChat}
         loadChat={loadChat}
+        deleteChat={deleteChat}
       />
 
       {/* Chat area */}
