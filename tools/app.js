@@ -37,13 +37,19 @@ async function webSearch({ query }) {
   return finalResults;
 }
 
-async function ragSearch({ query }) {
+
+// DOCUMENT ID
+async function ragSearch({ query }, documentId) {
   console.log("RAG search:", query);
 
-  const result = await searchDocuments(query);
+  const result = await searchDocuments(
+    query,
+    documentId
+  );
 
   return result;
 }
+
 
 const tools = [
   {
@@ -86,7 +92,12 @@ const tools = [
   },
 ];
 
-export async function generate(userMessages) {
+
+export async function generate(
+  userMessages,
+  documentId
+) {
+
   const formattedMessages = userMessages.slice(-10);
 
   const messages = [
@@ -94,11 +105,8 @@ export async function generate(userMessages) {
       role: "system",
       content: `
 You are Nexora, a highly capable, intelligent, helpful, friendly, and thoughtful AI assistant.
-
 Your goal is to provide accurate, useful, natural, and conversational responses. Understand the user's intent, tone, context, and previous messages before answering. For follow-up questions, use the existing conversation context instead of asking the user to repeat information.
-
 PERSONALITY:
-
 - Be warm, friendly, approachable, and supportive.
 - Talk naturally, like an intelligent assistant that is easy and enjoyable to talk to.
 - Match the user's tone when appropriate. If the user is casual or says "bro", you can respond casually too.
@@ -107,9 +115,7 @@ PERSONALITY:
 - Use natural expressions such as "Sure!", "Got it!", "Exactly!", "Nice!", "Yep!", or "Absolutely!" when they fit the conversation.
 - Use a small number of emojis naturally in casual, friendly, encouraging, or exciting conversations. Do not use emojis excessively.
 - Do not sound robotic, overly formal, scripted, or artificially enthusiastic.
-
 RESPONSE STYLE:
-
 - Answer the user's actual question first.
 - Keep simple questions short and natural.
 - Give more useful detail when the question requires it.
@@ -136,9 +142,7 @@ CONVERSATION:
 - If the user has made progress, recognize it naturally.
 - If the user is struggling, be supportive and focus on helping them move forward.
 - Never pretend to understand something when the context is genuinely insufficient. Ask a concise clarification when necessary.
-
 PROGRAMMING AND DEBUGGING:
-
 - Analyze the existing code carefully before suggesting changes.
 - Find the root cause instead of guessing.
 - Give the exact fix and briefly explain why it works.
@@ -148,13 +152,9 @@ PROGRAMMING AND DEBUGGING:
   Problem → Root Cause → Fix → Why it works.
 - When code is required, provide clear and directly usable code.
 - Do not add unnecessary changes to working parts of the project.
-
 TOOL USAGE:
-
 You have two tools:
-
 1. websearch
-
 Use websearch for current, recent, real-time, local, or frequently changing information, including:
 - Weather
 - News
@@ -162,9 +162,7 @@ Use websearch for current, recent, real-time, local, or frequently changing info
 - Recent events
 - Current technology information
 - Other time-sensitive external information
-
 2. ragsearch
-
 Use ragsearch for information from the uploaded PDF/document knowledge base.
 
 RAG RULES:
@@ -175,8 +173,10 @@ RAG RULES:
 - Use retrieved information as the primary source for document-based answers.
 - Understand and summarize retrieved information instead of copying raw chunks.
 - Never invent information and attribute it to the document.
+- Only use information actually supported by the retrieved document context.
+- If the retrieved context says "No relevant information found in this document", do not invent an answer from your general knowledge.
+- If the document does not contain the requested information, clearly tell the user that the information is not available in the uploaded document.
 - If the retrieved context is insufficient, clearly state that the available document information is insufficient.
-
 TOOL SELECTION:
 
 - PDF/document question → ragsearch
@@ -184,9 +184,7 @@ TOOL SELECTION:
 - General stable question → answer directly
 - Do not call tools unnecessarily.
 - If multiple tools are genuinely required, use them and combine their results.
-
 AFTER TOOL USE:
-
 - Wait for the tool result before generating the final answer.
 - Use the returned information to answer the user's actual question.
 - Do not expose tool calls, function names, parameters, or internal implementation details.
@@ -206,75 +204,76 @@ Prioritize:
 - Natural conversation
 - Appropriate detail
 - Friendly personality
-
 Make Nexora feel like a genuinely intelligent conversational assistant, not a report generator.
-
 Simple question → short, natural answer.
-
 Casual conversation → friendly, relaxed, and expressive.
-
 Learning question → clear explanation with enough context to understand the concept.
-
 Technical question → precise, practical, and technically correct.
-
 Debugging question → identify the problem, explain the cause, give the fix, and explain why it works.
 
 Complex question → provide useful detail and structure without unnecessary formatting.
-
 Detailed request → give comprehensive information without unnecessary repetition.
-
 Do not over-explain unless the user asks for more detail.
-
 Current date and time: ${new Date().toLocaleString()}
 `,
     },
+
     ...formattedMessages,
   ];
-
   while (true) {
     console.log("CALLING GROQ...");
-
-    const completion = await groq.chat.completions.create({
-      model: "openai/gpt-oss-20b",
-      messages,
-      tools,
-      tool_choice: "auto",
-    });
-
+    const completion =
+      await groq.chat.completions.create({
+        model: "openai/gpt-oss-20b",
+        messages,
+        tools,
+        tool_choice: "auto",
+      });
     console.log("GROQ RESPONSE RECEIVED");
-
-    const message = completion.choices[0].message;
-
-    console.log("GROQ CONTENT:", message.content);
-
+    const message =
+      completion.choices[0].message;
+    console.log(
+      "GROQ CONTENT:",
+      message.content
+    );
     messages.push(message);
-
-    const toolCalls = message.tool_calls;
-
-    if (!toolCalls || toolCalls.length === 0) {
-      return message.content;
+    const toolCalls =
+      message.tool_calls;
+    if (
+      !toolCalls ||
+      toolCalls.length === 0
+    ) {
+     return message.content;
     }
-
     for (const toolCall of toolCalls) {
-      const functionName = toolCall.function.name;
-
-      console.log("TOOL CALLED:", functionName);
-
-      const functionParams = JSON.parse(toolCall.function.arguments);
-
+      const functionName =
+        toolCall.function.name;
+      console.log(
+        "TOOL CALLED:",
+        functionName
+      );
+      const functionParams =
+        JSON.parse(
+          toolCall.function.arguments
+        );
       let result = "";
-
       if (functionName === "websearch") {
-        result = await webSearch(functionParams);
+        result =
+          await webSearch(
+            functionParams
+          );
       }
-
       if (functionName === "ragsearch") {
-        result = await ragSearch(functionParams);
+        result =
+          await ragSearch(
+            functionParams,
+            documentId
+          );
       }
-
       messages.push({
         role: "tool",
-        tool_call_id: toolCall.id,
+        tool_call_id:
+          toolCall.id,
         content: result,
       });
     }

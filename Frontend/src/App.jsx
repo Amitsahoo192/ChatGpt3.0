@@ -6,6 +6,7 @@ import {
 import Sidebar from "./components/Sidebar.jsx";
 import Message from "./components/Message.jsx";
 import VoiceInput from "./components/VoiceInput.jsx";
+import DocumentUpload from "./components/DocumentUpload.jsx";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [chatId, setChatId] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chats, setChats] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   // Reference to the bottom of the chat
   const messagesEndRef = useRef(null);
@@ -44,59 +46,71 @@ function App() {
       );
     }
   }
+
+
   async function deleteChat(id) {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this chat?"
-  );
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this chat?"
+    );
 
-  if (!confirmDelete) {
-    return;
-  }
+    if (!confirmDelete) {
+      return;
+    }
 
-  try {
-    const response = await fetch(
-      `http://localhost:3000/chats/${id}`,
-      {
-        method: "DELETE",
+    try {
+      const response = await fetch(
+        `http://localhost:3000/chats/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete chat");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Failed to delete chat");
+      // If deleted chat is currently open
+      if (chatId === id) {
+        setMessages([]);
+        setChatId(null);
+        setUploadedFile(null);
+      }
+
+      // Refresh sidebar
+      await loadChats();
+
+    } catch (error) {
+      console.error(
+        "Error deleting chat:",
+        error
+      );
     }
-
-    // If deleted chat is currently open
-    if (chatId === id) {
-      setMessages([]);
-      setChatId(null);
-    }
-
-    // Refresh sidebar
-    await loadChats();
-
-  } catch (error) {
-    console.error(
-      "Error deleting chat:",
-      error
-    );
   }
-}
+
+
   // Load chats when app starts
   useEffect(() => {
     loadChats();
   }, []);
+
 
   async function callServer(allMessages) {
     const response = await fetch(
       "http://localhost:3000/chat",
       {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           chatId: chatId,
           messages: allMessages,
+
+          // Send document ID
+          documentId:
+            uploadedFile?.documentId || null,
         }),
       }
     );
@@ -115,6 +129,7 @@ function App() {
 
     return data.message;
   }
+
 
   async function generate(text) {
     const newMessage = {
@@ -149,6 +164,7 @@ function App() {
         ...prevMessages,
         aiMessage,
       ]);
+
     } catch (error) {
       console.error(error);
 
@@ -161,10 +177,12 @@ function App() {
         ...prevMessages,
         errorMessage,
       ]);
+
     } finally {
       setLoading(false);
     }
   }
+
 
   async function handleAddBtn() {
     if (loading) {
@@ -181,6 +199,7 @@ function App() {
 
     await generate(text);
   }
+
 
   async function handleEnter(e) {
     if (
@@ -202,30 +221,53 @@ function App() {
     }
   }
 
+
   function handleNewChat() {
     setMessages([]);
     setChatId(null);
+
+    // Clear uploaded PDF
+    setUploadedFile(null);
   }
 
- function loadChat(chat) {
-  if (loading) {
-    return;
+
+  function loadChat(chat) {
+    if (loading) {
+      return;
+    }
+
+    setMessages(chat.messages);
+
+    setChatId(chat._id);
+
+    // Restore uploaded document
+    if (chat.documentId) {
+
+      setUploadedFile({
+        documentId: chat.documentId,
+      });
+
+    } else {
+
+      setUploadedFile(null);
+
+    }
   }
 
-  setMessages(chat.messages);
-  setChatId(chat._id);
-}
 
   return (
     <div className="flex h-screen bg-neutral-950 text-white">
 
-      {/* Sidebar */}<Sidebar
+      {/* Sidebar */}
+
+      <Sidebar
         chats={chats}
         chatId={chatId}
         handleNewChat={handleNewChat}
         loadChat={loadChat}
         deleteChat={deleteChat}
       />
+
 
       {/* Chat area */}
 
@@ -263,6 +305,7 @@ function App() {
 
           )}
 
+
           {/* Loading message */}
 
           {loading && (
@@ -277,6 +320,7 @@ function App() {
             </div>
           )}
 
+
           {/* Extra space for fixed input + auto-scroll target */}
 
           <div
@@ -288,6 +332,7 @@ function App() {
 
       </main>
 
+
       {/* Input section */}
 
       <div className="fixed bottom-0 left-64 right-0 flex justify-center p-4 z-50">
@@ -295,6 +340,13 @@ function App() {
         <div className="w-full max-w-3xl bg-neutral-900 border border-neutral-700 rounded-2xl p-3 shadow-lg focus-within:border-neutral-500">
 
           <div className="flex items-center gap-2">
+
+            <DocumentUpload
+              onUpload={(data) => {
+                setUploadedFile(data);
+              }}
+            />
+
 
             <textarea
               value={input}
@@ -306,7 +358,11 @@ function App() {
               className="flex-1 h-12 bg-transparent text-white placeholder:text-neutral-500 resize-none outline-none px-2 py-2 disabled:opacity-50"
               placeholder="Ask anything..."
             />
+
+
             <VoiceInput setInput={setInput} />
+
+
             <button
               className="bg-white text-black px-5 py-2 rounded-full font-medium hover:bg-neutral-200 hover:scale-105 active:scale-95 transition disabled:opacity-50"
               onClick={handleAddBtn}
@@ -316,6 +372,27 @@ function App() {
             </button>
 
           </div>
+
+
+          {uploadedFile && (
+  <div className="mt-2 flex items-center gap-2 text-sm text-green-400">
+
+    <span>
+      ✓ {uploadedFile.fileName || "Document attached"}
+    </span>
+
+    <button
+      onClick={() => {
+        setUploadedFile(null);
+      }}
+      className="text-neutral-400 hover:text-red-400 transition"
+      title="Remove document"
+    >
+      ✕
+    </button>
+
+  </div>
+)}
 
         </div>
 
