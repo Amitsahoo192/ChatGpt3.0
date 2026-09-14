@@ -9,23 +9,17 @@ import {
   logout,
 } from "../services/authService.js";
 
-
 export function useAuth() {
-  const [user, setUser] =
-    useState(null);
+  const [user, setUser] = useState(null);
 
-  const [loading, setLoading] =
-    useState(true);
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkAuth();
   }, []);
 
-
   async function checkAuth() {
-    const token =
-      getToken();
+    const token = getToken();
 
     if (!token) {
       setLoading(false);
@@ -33,14 +27,10 @@ export function useAuth() {
     }
 
     try {
-
-      const currentUser =
-        await getMe();
+      const currentUser = await getMe();
 
       setUser(currentUser);
-
     } catch (error) {
-
       console.error(
         "AUTH ERROR:",
         error
@@ -49,32 +39,29 @@ export function useAuth() {
       logout();
 
       setUser(null);
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
-
-  function handleLogin(
-    loggedInUser
-  ) {
+  function handleLogin(loggedInUser) {
     setUser(loggedInUser);
   }
-
 
   function handleLogout() {
     logout();
     setUser(null);
   }
 
+  function updateUser(updatedUser) {
+    setUser(updatedUser);
+  }
 
   return {
     user,
     loading,
     handleLogin,
     handleLogout,
+    updateUser,
   };
 }

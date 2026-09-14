@@ -7,11 +7,6 @@ import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
-
-// ===============================
-// REGISTER
-// ===============================
-
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -75,11 +70,6 @@ router.post("/register", async (req, res) => {
     });
   }
 });
-
-
-// ===============================
-// LOGIN
-// ===============================
 
 router.post("/login", async (req, res) => {
   try {
@@ -147,11 +137,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
-// ===============================
-// GET CURRENT USER
-// ===============================
-
 router.get("/me", protect, async (req, res) => {
   try {
     const user = await User.findById(
@@ -181,5 +166,102 @@ router.get("/me", protect, async (req, res) => {
   }
 });
 
+router.put("/profile", protect, async (req, res) => {
+  try {
+    const { name } = req.body;
 
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        message: "Username is required",
+      });
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    user.name = name.trim();
+
+    await user.save();
+
+    res.json({
+      message: "Username updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+  } catch (error) {
+    console.error("UPDATE PROFILE ERROR:", error);
+
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+});
+
+
+router.put("/password", protect, async (req, res) => {
+  try {
+    const {
+      currentPassword,
+      newPassword,
+    } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        message: "Current password and new password are required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "New password must be at least 6 characters",
+      });
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Current password is incorrect",
+      });
+    }
+
+    user.password = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    await user.save();
+
+    res.json({
+      message: "Password changed successfully",
+    });
+
+  } catch (error) {
+    console.error("CHANGE PASSWORD ERROR:", error);
+
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+});
 export default router;
