@@ -8,7 +8,7 @@ import { randomUUID } from "crypto";
 import authRoutes from "./routes/authRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import { protect } from "./middleware/auth.js";
-
+import resumeRoutes from "./routes/resumeRoutes.js";
 const app = express();
 
 const upload = multer({
@@ -20,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/resume", resumeRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to ChatBot!");

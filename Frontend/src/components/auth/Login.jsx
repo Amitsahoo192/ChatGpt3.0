@@ -59,7 +59,7 @@ function Login({ onLogin, onShowRegister }) {
 
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#0B100F] text-[#E5F2EF] flex items-center justify-center px-6">
 
       <div className="w-full max-w-md">
 
@@ -68,7 +68,7 @@ function Login({ onLogin, onShowRegister }) {
 
         <div className="flex flex-col items-center mb-8">
 
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-bold mb-5">
+          <div className="w-14 h-14 rounded-2xl bg-[#14B8A6] text-[#061411] flex items-center justify-center text-2xl font-bold mb-5">
             N
           </div>
 
@@ -76,7 +76,7 @@ function Login({ onLogin, onShowRegister }) {
             Welcome back
           </h1>
 
-          <p className="text-neutral-500 mt-2">
+          <p className="text-[#7F918D] mt-2">
             Login to continue to Nexora
           </p>
 
@@ -87,7 +87,7 @@ function Login({ onLogin, onShowRegister }) {
 
         <form
           onSubmit={handleLogin}
-          className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 shadow-xl"
+          className="bg-[#151716] border border-[#263B37] rounded-2xl p-7 shadow-xl"
         >
 
 
@@ -95,7 +95,7 @@ function Login({ onLogin, onShowRegister }) {
 
           <div className="mb-5">
 
-            <label className="block text-sm text-neutral-400 mb-2">
+            <label className="block text-sm text-[#9BAEAA] mb-2">
               Email
             </label>
 
@@ -107,7 +107,7 @@ function Login({ onLogin, onShowRegister }) {
               }
               placeholder="you@example.com"
               autoComplete="email"
-              className="w-full bg-neutral-950 border border-neutral-700 rounded-xl px-4 py-3 text-white placeholder:text-neutral-600 outline-none focus:border-neutral-400 transition"
+              className="w-full bg-[#0B100F] border border-[#263B37] rounded-xl px-4 py-3 text-[#E5F2EF] placeholder:text-[#667873] outline-none focus:border-[#14B8A6] transition"
             />
 
           </div>
@@ -117,7 +117,7 @@ function Login({ onLogin, onShowRegister }) {
 
           <div className="mb-5">
 
-            <label className="block text-sm text-neutral-400 mb-2">
+            <label className="block text-sm text-[#9BAEAA] mb-2">
               Password
             </label>
 
@@ -129,7 +129,7 @@ function Login({ onLogin, onShowRegister }) {
               }
               placeholder="Your password"
               autoComplete="current-password"
-              className="w-full bg-neutral-950 border border-neutral-700 rounded-xl px-4 py-3 text-white placeholder:text-neutral-600 outline-none focus:border-neutral-400 transition"
+              className="w-full bg-[#0B100F] border border-[#263B37] rounded-xl px-4 py-3 text-[#E5F2EF] placeholder:text-[#667873] outline-none focus:border-[#14B8A6] transition"
             />
 
           </div>
@@ -149,7 +149,7 @@ function Login({ onLogin, onShowRegister }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-white text-black font-medium hover:bg-neutral-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl bg-[#14B8A6] text-[#061411] font-medium hover:bg-[#2DD4BF] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? "Logging in..."
@@ -159,14 +159,14 @@ function Login({ onLogin, onShowRegister }) {
 
           {/* Register */}
 
-          <div className="text-center mt-6 text-sm text-neutral-500">
+          <div className="text-center mt-6 text-sm text-[#7F918D]">
 
             Don't have an account?
 
             <button
               type="button"
               onClick={onShowRegister}
-              className="ml-1 text-white hover:underline"
+              className="ml-1 text-[#5EEAD4] hover:text-[#2DD4BF] hover:underline"
             >
               Create account
             </button>

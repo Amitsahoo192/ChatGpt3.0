@@ -14,14 +14,14 @@ function Sidebar({
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen w-72 bg-[#111827] border-r border-neutral-800 p-4 flex flex-col">
+    <div className="h-screen w-72 bg-[#151716] border-r border-[#292C29] p-4 flex flex-col">
 
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+        <div className="w-9 h-9 rounded-lg bg-[#14B8A6] text-[#061411] flex items-center justify-center font-bold">
           N
         </div>
 
-        <span className="text-xl font-semibold text-white">
+        <span className="text-xl font-semibold text-[#E5F2EF]">
           Nexora
         </span>
       </div>
@@ -29,9 +29,9 @@ function Sidebar({
       <button
         type="button"
         onClick={handleNewChat}
-        className="group w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 transition-all duration-300 hover:scale-[1.01] active:scale-95 shadow-lg shadow-blue-500/10"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#14B8A6] text-[#061411] hover:bg-[#2DD4BF] transition-colors"
       >
-        <span className="text-xl transition-transform duration-300 group-hover:rotate-90">
+        <span className="text-xl">
           +
         </span>
 
@@ -42,7 +42,7 @@ function Sidebar({
 
       <div className="mt-8 flex-1 min-h-0">
 
-        <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-3">
+        <p className="text-xs font-medium text-[#777A74] uppercase tracking-wider mb-3">
           Recent Chats
         </p>
 
@@ -51,7 +51,11 @@ function Sidebar({
           {chats.map((chat) => (
             <div
               key={chat._id}
-              className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${chatId === chat._id ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/70 hover:text-white"}`}
+              className={`group flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                chatId === chat._id
+                  ? "bg-[#242623] text-[#E5F2EF]"
+                  : "text-[#969891] hover:bg-[#1D1F1D] hover:text-[#E5F2EF]"
+              }`}
             >
 
               <div
@@ -67,7 +71,7 @@ function Sidebar({
                   e.stopPropagation();
                   deleteChat(chat._id);
                 }}
-                className="opacity-0 group-hover:opacity-100 text-neutral-500 hover:text-red-400 transition-all duration-200 px-1"
+                className="opacity-0 group-hover:opacity-100 text-[#777A74] hover:text-red-400 transition-all duration-200 px-1"
                 title="Delete chat"
               >
                 ×
@@ -82,38 +86,40 @@ function Sidebar({
 
       <div className="relative pt-4">
 
-        <div className="h-px bg-neutral-800 mb-3" />
+        <div className="h-px bg-[#292C29] mb-3" />
 
         <button
           type="button"
-          onClick={() => setShowProfile((previous) => !previous)}
-          className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-neutral-800/60 transition text-left"
+          onClick={() =>
+            setShowProfile((previous) => !previous)
+          }
+          className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-[#1D1F1D] transition text-left"
         >
 
-          <div className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-medium text-white">
+          <div className="w-9 h-9 rounded-full bg-[#242623] border border-[#292C29] flex items-center justify-center text-sm font-medium text-[#2DD4BF]">
             {user?.name?.charAt(0)?.toUpperCase() || "U"}
           </div>
 
           <div className="flex-1 min-w-0">
 
-            <p className="text-sm text-white truncate">
+            <p className="text-sm text-[#E5F2EF] truncate">
               {user?.name || "User"}
             </p>
 
-            <p className="text-xs text-neutral-500 truncate">
+            <p className="text-xs text-[#777A74] truncate">
               {user?.email || ""}
             </p>
 
           </div>
 
-          <span className="text-neutral-500">
+          <span className="text-[#777A74]">
             ⋮
           </span>
 
         </button>
 
         {showProfile && (
-          <div className="absolute bottom-full left-0 right-0 mb-2 bg-neutral-900 border border-neutral-800 rounded-xl p-1 shadow-xl">
+          <div className="absolute bottom-full left-0 right-0 mb-2 bg-[#191B19] border border-[#292C29] rounded-lg p-1 shadow-xl">
 
             <button
               type="button"
@@ -121,7 +127,7 @@ function Sidebar({
                 setShowProfile(false);
                 navigate("/settings");
               }}
-              className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-neutral-300 hover:bg-neutral-800 hover:text-white transition"
+              className="w-full text-left px-3 py-2.5 rounded-md text-sm text-[#C4C5BE] hover:bg-[#242623] hover:text-[#E5F2EF] transition"
             >
               Settings
             </button>
@@ -132,7 +138,7 @@ function Sidebar({
                 setShowProfile(false);
                 navigate("/help");
               }}
-              className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-neutral-300 hover:bg-neutral-800 hover:text-white transition"
+              className="w-full text-left px-3 py-2.5 rounded-md text-sm text-[#C4C5BE] hover:bg-[#242623] hover:text-[#E5F2EF] transition"
             >
               Help
             </button>
@@ -140,7 +146,7 @@ function Sidebar({
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition"
+              className="w-full text-left px-3 py-2.5 rounded-md text-sm text-red-400 hover:bg-red-500/10 transition"
             >
               Logout
             </button>
@@ -151,8 +157,8 @@ function Sidebar({
       </div>
 
       <div className="pt-3">
-        <div className="flex items-center gap-2 text-sm text-neutral-500">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+        <div className="flex items-center gap-2 text-sm text-[#777A74]">
+          <div className="w-2 h-2 rounded-full bg-[#14B8A6]" />
           Nexora AI
         </div>
       </div>

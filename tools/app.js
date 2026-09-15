@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import { tavily } from "@tavily/core";
 import Nodecache from "node-cache";
 import { searchDocuments } from "../RAG/search.js";
-
 const cache = new Nodecache({ stdTTL: 3600 });
 
 dotenv.config();
@@ -243,7 +242,7 @@ Current date and time: ${new Date().toLocaleString()}
       !toolCalls ||
       toolCalls.length === 0
     ) {
-     return message.content;
+      return message.content;
     }
     for (const toolCall of toolCalls) {
       const functionName =
@@ -278,4 +277,136 @@ Current date and time: ${new Date().toLocaleString()}
       });
     }
   }
+}
+export async function analyzeResume(resumeText) {
+  const completion =
+    await groq.chat.completions.create({
+      model: "openai/gpt-oss-20b",
+
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an ATS resume analyzer and recruiter.
+
+Analyze the resume using ONLY information present in the resume.
+
+Rules:
+- Never invent skills, technologies, experience, projects, achievements, certifications, or metrics.
+- Never recommend technologies the candidate has not used.
+- Never create fake numbers.
+- Recommendations must be specific to this resume.
+- If a real metric would improve a bullet, tell the candidate to add a real metric only.
+- Avoid generic advice.
+
+Analyze:
+1. ATS score from 0 to 100
+2. Overall resume quality
+3. Technical skills present
+4. Strengths
+5. Weaknesses
+6. ATS readability
+7. Practical improvements
+
+Provide 3 to 5 concise recommendations.
+
+Good:
+"Your project descriptions list technologies but do not clearly explain your personal contribution."
+
+Bad:
+"Learn AWS and Kubernetes."
+
+Keep every recommendation concise.
+
+Return only valid JSON matching the schema.
+`,
+        },
+
+        {
+          role: "user",
+          content: `
+Analyze this resume:
+
+${resumeText}
+`,
+        },
+      ],
+
+      response_format: {
+        type: "json_schema",
+
+        json_schema: {
+          name: "resume_analysis",
+
+          strict: true,
+
+          schema: {
+            type: "object",
+
+            properties: {
+              atsScore: {
+                type: "integer",
+                minimum: 0,
+                maximum: 100,
+              },
+
+              summary: {
+                type: "string",
+              },
+
+              skills: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              strengths: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              weaknesses: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              recommendations: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+            },
+
+            required: [
+              "atsScore",
+              "summary",
+              "skills",
+              "strengths",
+              "weaknesses",
+              "recommendations",
+            ],
+
+            additionalProperties: false,
+          },
+        },
+      },
+
+      temperature: 0.1,
+    });
+
+  const content =
+    completion.choices[0].message.content;
+
+  console.log(
+    "RESUME AI RESPONSE:",
+    content
+  );
+
+  return JSON.parse(content);
 }

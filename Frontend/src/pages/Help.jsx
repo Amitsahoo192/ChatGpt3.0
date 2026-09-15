@@ -11,28 +11,35 @@ function Help() {
   const faqs = [
     {
       question: "How do I start a new conversation?",
-      answer: "Click the New Chat button in the sidebar to start a fresh conversation with Nexora.",
+      answer:
+        "Click the New Chat button in the sidebar to start a fresh conversation with Nexora.",
     },
     {
       question: "How do I use document search?",
-      answer: "Upload a supported document from the chat input and then ask Nexora questions about its contents.",
+      answer:
+        "Upload a supported document from the chat input and then ask Nexora questions about its contents.",
     },
     {
       question: "When does Nexora use web search?",
-      answer: "Nexora can use web search when your question requires current or external information.",
+      answer:
+        "Nexora can use web search when your question requires current or external information.",
     },
     {
       question: "Can I use voice with Nexora?",
-      answer: "Yes. You can use voice input to send questions and voice output to listen to Nexora's responses.",
+      answer:
+        "Yes. You can use voice input to send questions and voice output to listen to Nexora's responses.",
     },
     {
       question: "Where are my previous chats?",
-      answer: "Your previous conversations appear in the Recent Chats section of the sidebar.",
+      answer:
+        "Your previous conversations appear in the Recent Chats section of the sidebar.",
     },
   ];
 
   const filteredFaqs = faqs.filter((faq) =>
-    `${faq.question} ${faq.answer}`.toLowerCase().includes(search.toLowerCase())
+    `${faq.question} ${faq.answer}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   const copyEmail = async () => {
@@ -49,15 +56,14 @@ function Help() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white relative overflow-hidden">
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
-      <div className="absolute top-20 right-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-[#0B100F] text-[#E5F2EF]">
 
-      <div className="relative z-10 p-6 md:p-8">
+      <div className="p-6 md:p-8">
 
         <div className="flex items-center justify-between mb-10">
+
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-lg shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-lg bg-[#14B8A6] text-[#061411] flex items-center justify-center font-bold text-lg">
               N
             </div>
 
@@ -69,10 +75,11 @@ function Help() {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="px-4 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-sm text-neutral-300 hover:bg-neutral-800 hover:text-white transition"
+            className="px-4 py-2 rounded-lg bg-[#151716] border border-[#292C29] text-sm text-[#B8C0BC] hover:bg-[#1D1F1D] hover:text-[#E5F2EF] transition"
           >
             Back to Chat
           </button>
+
         </div>
 
         <div className="max-w-3xl mx-auto">
@@ -82,13 +89,14 @@ function Help() {
               Help & Support
             </h1>
 
-            <p className="text-neutral-500 mt-2">
+            <p className="text-[#737A75] mt-2">
               Find answers and learn how to get the most out of Nexora.
             </p>
           </div>
 
           <div className="relative mb-8">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#737A75]">
               ⌕
             </span>
 
@@ -97,8 +105,9 @@ function Help() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search help topics..."
-              className="w-full bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl px-11 py-3.5 outline-none focus:border-blue-500 transition"
+              className="w-full bg-[#151716] border border-[#292C29] rounded-lg px-11 py-3.5 outline-none text-[#E5F2EF] placeholder:text-[#626A65] focus:border-[#14B8A6]/60 transition"
             />
+
           </div>
 
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
@@ -106,9 +115,9 @@ function Help() {
             <button
               type="button"
               onClick={() => setSearch("document")}
-              className="text-left bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-5 hover:border-blue-500/40 hover:bg-neutral-900 transition"
+              className="text-left bg-[#151716] border border-[#292C29] rounded-lg p-5 hover:bg-[#1B1E1C] hover:border-[#14B8A6]/40 transition"
             >
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center text-[#2DD4BF] mb-4">
                 📄
               </div>
 
@@ -116,7 +125,7 @@ function Help() {
                 Documents
               </h2>
 
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-[#737A75] mt-1">
                 Learn how to upload and ask questions about documents.
               </p>
             </button>
@@ -124,9 +133,9 @@ function Help() {
             <button
               type="button"
               onClick={() => setSearch("voice")}
-              className="text-left bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-5 hover:border-purple-500/40 hover:bg-neutral-900 transition"
+              className="text-left bg-[#151716] border border-[#292C29] rounded-lg p-5 hover:bg-[#1B1E1C] hover:border-[#14B8A6]/40 transition"
             >
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center text-[#2DD4BF] mb-4">
                 🎤
               </div>
 
@@ -134,7 +143,7 @@ function Help() {
                 Voice
               </h2>
 
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-[#737A75] mt-1">
                 Learn how to use Nexora's voice features.
               </p>
             </button>
@@ -142,9 +151,9 @@ function Help() {
             <button
               type="button"
               onClick={() => setSearch("web search")}
-              className="text-left bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-5 hover:border-cyan-500/40 hover:bg-neutral-900 transition"
+              className="text-left bg-[#151716] border border-[#292C29] rounded-lg p-5 hover:bg-[#1B1E1C] hover:border-[#14B8A6]/40 transition"
             >
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center text-[#2DD4BF] mb-4">
                 🌐
               </div>
 
@@ -152,7 +161,7 @@ function Help() {
                 Web Search
               </h2>
 
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-[#737A75] mt-1">
                 Understand how Nexora handles current information.
               </p>
             </button>
@@ -160,9 +169,9 @@ function Help() {
             <button
               type="button"
               onClick={() => navigate("/settings")}
-              className="text-left bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-5 hover:border-pink-500/40 hover:bg-neutral-900 transition"
+              className="text-left bg-[#151716] border border-[#292C29] rounded-lg p-5 hover:bg-[#1B1E1C] hover:border-[#14B8A6]/40 transition"
             >
-              <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center text-[#2DD4BF] mb-4">
                 ⚙
               </div>
 
@@ -170,22 +179,25 @@ function Help() {
                 Account Settings
               </h2>
 
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-[#737A75] mt-1">
                 Manage your username, password, and preferences.
               </p>
             </button>
 
           </section>
 
-          <section className="bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-6 mb-6">
+          <section className="bg-[#151716] border border-[#292C29] rounded-lg p-6 mb-6">
+
             <div className="mb-5">
+
               <h2 className="text-lg font-medium">
                 Frequently Asked Questions
               </h2>
 
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-[#737A75] mt-1">
                 Quick answers to common questions.
               </p>
+
             </div>
 
             <div className="space-y-2">
@@ -194,56 +206,70 @@ function Help() {
                 filteredFaqs.map((faq, index) => (
                   <div
                     key={faq.question}
-                    className="border border-neutral-800 rounded-xl overflow-hidden"
+                    className="border border-[#292C29] rounded-lg overflow-hidden"
                   >
+
                     <button
                       type="button"
-                      onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                      className="w-full flex items-center justify-between gap-4 px-4 py-4 text-left hover:bg-neutral-800/60 transition"
+                      onClick={() =>
+                        setOpenFaq(
+                          openFaq === index ? null : index
+                        )
+                      }
+                      className="w-full flex items-center justify-between gap-4 px-4 py-4 text-left hover:bg-[#1D1F1D] transition"
                     >
-                      <span className="text-sm text-neutral-200">
+
+                      <span className="text-sm text-[#D8DDD9]">
                         {faq.question}
                       </span>
 
-                      <span className="text-neutral-500 text-lg">
+                      <span className="text-[#737A75] text-lg">
                         {openFaq === index ? "−" : "+"}
                       </span>
+
                     </button>
 
                     {openFaq === index && (
                       <div className="px-4 pb-4">
-                        <p className="text-sm text-neutral-500 leading-6">
+
+                        <p className="text-sm text-[#737A75] leading-6">
                           {faq.answer}
                         </p>
+
                       </div>
                     )}
+
                   </div>
                 ))
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-sm text-neutral-500">
+
+                  <p className="text-sm text-[#737A75]">
                     No help topics found.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => setSearch("")}
-                    className="text-sm text-blue-400 hover:text-blue-300 mt-2 transition"
+                    className="text-sm text-[#6FAF8F] hover:text-[#82BD9D] mt-2 transition"
                   >
                     Clear search
                   </button>
+
                 </div>
               )}
 
             </div>
+
           </section>
 
-          <section className="bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-2xl p-6">
+          <section className="bg-[#151716] border border-[#292C29] rounded-lg p-6">
+
             <h2 className="text-lg font-medium mb-2">
               Contact & Support
             </h2>
 
-            <p className="text-sm text-neutral-500 mb-5">
+            <p className="text-sm text-[#737A75] mb-5">
               Need more help? Get in touch with Nexora support.
             </p>
 
@@ -252,31 +278,37 @@ function Help() {
               <button
                 type="button"
                 onClick={copyEmail}
-                className="flex-1 flex items-center justify-between gap-3 bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 hover:bg-neutral-700 transition"
+                className="flex-1 flex items-center justify-between gap-3 bg-[#191C1A] border border-[#292D2A] rounded-lg px-4 py-3 hover:bg-[#1D1F1D] transition"
               >
+
                 <div className="text-left">
-                  <p className="text-xs text-neutral-500">
+
+                  <p className="text-xs text-[#737A75]">
                     Email
                   </p>
 
-                  <p className="text-sm text-white mt-1">
+                  <p className="text-sm text-[#E5F2EF] mt-1">
                     support@nexora.ai
                   </p>
+
                 </div>
 
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-[#737A75]">
                   {copied ? "Copied!" : "Copy"}
                 </span>
+
               </button>
 
-              <div className="flex-1 bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3">
-                <p className="text-xs text-neutral-500">
+              <div className="flex-1 bg-[#191C1A] border border-[#292D2A] rounded-lg px-4 py-3">
+
+                <p className="text-xs text-[#737A75]">
                   Helpline
                 </p>
 
-                <p className="text-sm text-white mt-1">
-                  +91 XXXXX XXXXX
+                <p className="text-sm text-[#E5F2EF] mt-1">
+                  +91 9439326001
                 </p>
+
               </div>
 
             </div>
