@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { uploadDocument } from "../../services/documentService.js";
+import { uploadDocument } from "../../services/documentservice.js";
 
 function DocumentUpload({ onUpload }) {
   const fileInputRef = useRef(null);
