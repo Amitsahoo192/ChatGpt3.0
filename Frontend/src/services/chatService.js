@@ -1,5 +1,5 @@
 const API_URL =
-  "http://localhost:3000/api/chats";
+  "https://nexora-aqr7.onrender.com/api/chats";
 
 
 function getAuthHeaders() {

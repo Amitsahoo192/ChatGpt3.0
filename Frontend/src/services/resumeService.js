@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/resume/analyze";
+const API_URL = "https://nexora-aqr7.onrender.com/api/resume/analyze";
 
 export async function analyzeResume(file) {
   const token = localStorage.getItem("token");

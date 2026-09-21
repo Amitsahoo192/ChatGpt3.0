@@ -1,5 +1,5 @@
 const API_URL =
-  "http://localhost:3000/upload-document";
+  "https://nexora-aqr7.onrender.com/upload-document";
 
 
 export async function uploadDocument(

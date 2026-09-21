@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/auth";
+const API_URL = "https://nexora-aqr7.onrender.com/api/auth";
 
 export async function login(
   email,
